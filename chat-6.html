@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZENITH AI — Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  background:#000005;
+  font-family:'Inter', sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+/* ── AMBIENT GLOW (sutil, sin distorsión) ── */
+.ambient {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background: radial-gradient(ellipse 60% 40% at 50% 50%,
+    rgba(255,255,255,0.018) 0%, transparent 70%);
+}
+
+/* ── CORNER HAIRLINES ── */
+.corner { position:fixed; z-index:5; pointer-events:none; }
+.corner--tl { top:32px; left:32px; }
+.corner--br { bottom:32px; right:32px; }
+.corner--tl::before, .corner--tl::after,
+.corner--br::before, .corner--br::after {
+  content:''; position:absolute; background:rgba(255,255,255,0.08);
+}
+.corner--tl::before { width:40px; height:0.5px; top:0; left:0; }
+.corner--tl::after  { width:0.5px; height:40px; top:0; left:0; }
+.corner--br::before { width:40px; height:0.5px; bottom:0; right:0; }
+.corner--br::after  { width:0.5px; height:40px; bottom:0; right:0; }
+
+/* ══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+header {
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  height:56px;
+  padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(0,0,5,0.85);
+  border-bottom:0.5px solid rgba(255,255,255,0.07);
+}
+
+.header-left {
+  display:flex; align-items:center; gap:16px;
+}
+
+/* Sidebar toggle */
+.btn-sidebar {
+  width:32px; height:32px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+  background:none; border:none; cursor:pointer; padding:6px;
+  border-radius:8px;
+  transition:background 0.25s;
+}
+.btn-sidebar:hover { background:rgba(255,255,255,0.06); }
+.btn-sidebar span {
+  display:block; width:16px; height:0.5px;
+  background:rgba(255,255,255,0.5);
+  transition:transform 0.3s, opacity 0.3s;
+}
+
+.brand-name {
+  font-family:'Inter', sans-serif;
+  font-size:13px;
+  font-weight:300;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.88);
+  letter-spacing:0.1em;
+  line-height:1;
+}
+
+.header-right {
+  display:flex; align-items:center; gap:10px;
+}
+
+/* New chat button */
+.btn-new-chat {
+  padding:7px 16px;
+  font-family:'Inter', sans-serif;
+  font-size:10px; font-weight:400;
+  letter-spacing:0.22em; text-transform:uppercase;
+  color:rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.04);
+  border:0.5px solid rgba(255,255,255,0.12);
+  border-radius:9999px;
+  cursor:pointer;
+  transition:background 0.3s, border-color 0.3s, color 0.3s;
+}
+.btn-new-chat:hover {
+  background:rgba(255,255,255,0.08);
+  border-color:rgba(255,255,255,0.22);
+  color:rgba(255,255,255,0.9);
+}
+
+/* User avatar */
+.user-avatar {
+  width:30px; height:30px; border-radius:50%;
+  background:rgba(255,255,255,0.07);
+  border:0.5px solid rgba(255,255,255,0.15);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:400; letter-spacing:0.05em;
+  color:rgba(255,255,255,0.6);
+  cursor:pointer;
+  overflow:hidden;
+  transition:border-color 0.3s;
+}
+.user-avatar:hover { border-color:rgba(255,255,255,0.32); }
+.user-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+/* ══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  position:fixed; top:56px; left:0; bottom:0; z-index:40;
+  width:240px;
+  background:rgba(0,0,5,0.92);
+  border-right:0.5px solid rgba(255,255,255,0.06);
+  transform:translateX(-100%);
+  transition:transform 0.35s cubic-bezier(0.19,1,0.22,1);
+  display:flex; flex-direction:column;
+  padding:20px 0;
+}
+.sidebar.open { transform:translateX(0); }
+
+.sidebar-section-title {
+  font-size:8px; font-weight:400;
+  letter-spacing:0.38em; text-transform:uppercase;
+  color:rgba(255,255,255,0.2);
+  padding:0 20px 10px;
+}
+
+.sidebar-item {
+  padding:9px 20px;
+  font-size:11px; font-weight:300; letter-spacing:0.04em;
+  color:rgba(255,255,255,0.4);
+  cursor:pointer;
+  display:flex; align-items:center; gap:10px;
+  border-radius:0;
+  transition:background 0.2s, color 0.2s;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sidebar-item:hover { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.75); }
+.sidebar-item.active { color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.05); }
+
+.sidebar-icon { font-size:13px; opacity:0.5; flex-shrink:0; }
+
+.sidebar-footer {
+  margin-top:auto;
+  padding:16px 20px;
+  border-top:0.5px solid rgba(255,255,255,0.06);
+}
+.sidebar-footer-link {
+  display:block;
+  font-size:9px; font-weight:300; letter-spacing:0.28em; text-transform:uppercase;
+  color:rgba(255,255,255,0.2);
+  text-decoration:none; padding:6px 0;
+  transition:color 0.25s;
+}
+.sidebar-footer-link:hover { color:rgba(255,255,255,0.5); }
+
+/* Overlay */
+.sidebar-overlay {
+  position:fixed; inset:0; z-index:39;
+  background:rgba(0,0,0,0.4);
+  opacity:0; pointer-events:none;
+  transition:opacity 0.35s;
+}
+.sidebar-overlay.visible { opacity:1; pointer-events:auto; }
+
+/* ══════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════ */
+.chat-wrapper {
+  position:fixed;
+  top:56px; left:0; right:0; bottom:0;
+  display:flex; flex-direction:column;
+  z-index:10;
+}
+
+/* ── WELCOME SCREEN (Estado inicial centrado) ── */
+#welcome-screen {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:8px;
+  pointer-events:none;
+  animation:fadeInWelcome 0.8s cubic-bezier(0.19,1,0.22,1) 0.2s both;
+}
+
+@keyframes fadeInWelcome {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.welcome-greeting {
+  font-family:'Great Vibes', cursive;
+  font-size:clamp(2.2rem, 6vw, 3.8rem);
+  color:rgba(255,255,255,0.88);
+  line-height:1.1;
+  text-align:center;
+}
+
+.welcome-sub {
+  font-size:12px; font-weight:300;
+  letter-spacing:0.18em;
+  color:rgba(255,255,255,0.28);
+  text-transform:uppercase;
+  margin-top:6px;
+  text-align:center;
+}
+
+/* Suggested prompts */
+.welcome-prompts {
+  display:flex; flex-wrap:wrap; gap:8px;
+  justify-content:center;
+  max-width:520px;
+  margin-top:32px;
+  pointer-events:auto;
+}
+
+.prompt-chip {
+  padding:9px 18px;
+  font-size:10px; font-weight:300; letter-spacing:0.12em;
+  color:rgba(255,255,255,0.4);
+  background:rgba(255,255,255,0.03);
+  border:0.5px solid rgba(255,255,255,0.1);
+  border-radius:9999px;
+  cursor:pointer;
+  transition:background 0.3s, border-color 0.3s, color 0.3s;
+  white-space:nowrap;
+}
+.prompt-chip:hover {
+  background:rgba(255,255,255,0.07);
+  border-color:rgba(255,255,255,0.22);
+  color:rgba(255,255,255,0.75);
+}
+
+/* ── MESSAGES CONTAINER ── */
+#messages-container {
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:28px 0 20px;
+  scroll-behavior:smooth;
+
+  /* Custom scrollbar */
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,0.08) transparent;
+}
+#messages-container::-webkit-scrollbar { width:4px; }
+#messages-container::-webkit-scrollbar-track { background:transparent; }
+#messages-container::-webkit-scrollbar-thumb {
+  background:rgba(255,255,255,0.08); border-radius:2px;
+}
+
+.messages-inner {
+  max-width:700px;
+  margin:0 auto;
+  padding:0 20px;
+  display:flex; flex-direction:column;
+  gap:6px;
+}
+
+/* ── CHAT BUBBLES ── */
+.msg-row {
+  display:flex;
+  animation:msgIn 0.35s cubic-bezier(0.19,1,0.22,1) both;
+}
+@keyframes msgIn {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.msg-row.user  { justify-content:flex-end; }
+.msg-row.zenith { justify-content:flex-start; }
+
+/* Wrapper para burbuja + footer */
+.msg-block {
+  display:flex; flex-direction:column;
+  max-width:78%;
+}
+.msg-row.user  .msg-block { align-items:flex-end; }
+.msg-row.zenith .msg-block { align-items:flex-start; }
+
+/* Bubble */
+.bubble {
+  padding:12px 17px;
+  border-radius:18px;
+  font-size:13px; font-weight:300; line-height:1.65;
+  letter-spacing:0.01em;
+  position:relative;
+  word-break:break-word;
+}
+
+/* User bubble */
+.msg-row.user .bubble {
+  background:rgba(255,255,255,0.08);
+  border:0.5px solid rgba(255,255,255,0.12);
+  border-bottom-right-radius:5px;
+  color:rgba(255,255,255,0.88);
+}
+
+/* Zenith bubble */
+.msg-row.zenith .bubble {
+  background:rgba(255,255,255,0.035);
+  border:0.5px solid rgba(255,255,255,0.07);
+  border-bottom-left-radius:5px;
+  color:rgba(255,255,255,0.80);
+}
+
+/* Sender label */
+.msg-label {
+  font-size:9px; font-weight:300; letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.18);
+  margin-bottom:5px;
+  padding:0 2px;
+}
+
+/* ── ACTION BAR (bajo burbuja Zenith) ── */
+.msg-actions {
+  display:flex; align-items:center; gap:2px;
+  margin-top:6px;
+  padding:0 2px;
+}
+
+.action-btn {
+  background:none; border:none; cursor:pointer;
+  padding:5px 6px;
+  border-radius:7px;
+  color:rgba(255,255,255,0.22);
+  font-size:13px; line-height:1;
+  transition:background 0.2s, color 0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.action-btn:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.55); }
+.action-btn.active-like   { color:rgba(120,220,130,0.8); }
+.action-btn.active-dislike { color:rgba(220,100,100,0.8); }
+
+.action-sep {
+  width:0.5px; height:12px;
+  background:rgba(255,255,255,0.07);
+  margin:0 4px;
+}
+
+.disclaimer-text {
+  font-size:9px; font-weight:300;
+  letter-spacing:0.04em;
+  color:rgba(255,255,255,0.16);
+  margin-left:4px;
+  line-height:1.4;
+}
+
+/* ── TYPING INDICATOR ── */
+.typing-indicator {
+  display:none;
+  align-items:center; gap:4px;
+  padding:12px 17px;
+  background:rgba(255,255,255,0.035);
+  border:0.5px solid rgba(255,255,255,0.07);
+  border-radius:18px; border-bottom-left-radius:5px;
+}
+.typing-dot {
+  width:5px; height:5px; border-radius:50%;
+  background:rgba(255,255,255,0.35);
+  animation:typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay:0.2s; }
+.typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform:translateY(0); opacity:0.35; }
+  30% { transform:translateY(-5px); opacity:0.7; }
+}
+
+/* ══════════════════════════════════════════
+   INPUT BAR (inferior fija)
+═══════════════════════════════════════════ */
+.input-bar {
+  flex-shrink:0;
+  padding:12px 16px 16px;
+  background:#000005;
+  border-top:0.5px solid rgba(255,255,255,0.05);
+}
+
+.input-inner {
+  max-width:700px;
+  margin:0 auto;
+}
+
+.input-box {
+  display:flex; align-items:flex-end; gap:0;
+  background:rgba(255,255,255,0.05);
+  border:0.5px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:10px 12px;
+  transition:border-color 0.3s, background 0.3s;
+  min-height:60px;
+}
+.input-box:focus-within {
+  border-color:rgba(255,255,255,0.22);
+  background:rgba(255,255,255,0.065);
+}
+
+/* Attach button (+) */
+.btn-attach {
+  flex-shrink:0;
+  width:30px; height:30px;
+  background:none; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,0.28);
+  border-radius:9px;
+  transition:background 0.2s, color 0.2s;
+  align-self:flex-end; margin-bottom:1px;
+}
+.btn-attach:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); }
+.btn-attach svg { width:16px; height:16px; }
+
+/* Textarea */
+#chat-input {
+  flex:1;
+  background:none; border:none; outline:none; resize:none;
+  font-family:'Inter', sans-serif;
+  font-size:13px; font-weight:300; line-height:1.55; letter-spacing:0.02em;
+  color:rgba(255,255,255,0.82);
+  padding:2px 10px;
+  max-height:160px;
+  overflow-y:auto;
+  scrollbar-width:none;
+  align-self:flex-end; margin-bottom:1px;
+}
+#chat-input::-webkit-scrollbar { display:none; }
+#chat-input::placeholder { color:rgba(255,255,255,0.22); }
+
+.input-right {
+  display:flex; align-items:center; gap:6px;
+  align-self:flex-end; margin-bottom:1px; flex-shrink:0;
+}
+
+/* Mic button */
+.btn-mic {
+  width:30px; height:30px;
+  background:none; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,0.28);
+  border-radius:9px;
+  transition:background 0.2s, color 0.2s;
+}
+.btn-mic:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); }
+.btn-mic.recording { color:rgba(220,80,80,0.8); animation:micPulse 1.2s ease infinite; }
+.btn-mic svg { width:15px; height:15px; }
+@keyframes micPulse {
+  0%, 100% { opacity:1; } 50% { opacity:0.45; }
+}
+
+/* Send button */
+.btn-send {
+  width:30px; height:30px;
+  background:rgba(255,255,255,0.08);
+  border:0.5px solid rgba(255,255,255,0.14);
+  border-radius:9px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,0.55);
+  transition:background 0.25s, border-color 0.25s, color 0.25s, transform 0.15s;
+}
+.btn-send:hover:not(:disabled) {
+  background:rgba(255,255,255,0.14);
+  border-color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.9);
+  transform:scale(1.05);
+}
+.btn-send:active:not(:disabled) { transform:scale(0.95); }
+.btn-send:disabled { opacity:0.3; cursor:not-allowed; }
+.btn-send svg { width:14px; height:14px; }
+
+/* Input hint */
+.input-hint {
+  text-align:center;
+  font-size:9px; font-weight:300; letter-spacing:0.2em;
+  color:rgba(255,255,255,0.12);
+  margin-top:9px;
+  text-transform:uppercase;
+}
+
+/* File attached tag */
+.file-tag {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px;
+  background:rgba(255,255,255,0.05);
+  border:0.5px solid rgba(255,255,255,0.1);
+  border-radius:9999px;
+  font-size:10px; font-weight:300; letter-spacing:0.06em;
+  color:rgba(255,255,255,0.5);
+  margin-bottom:8px;
+}
+.file-tag .remove-file {
+  cursor:pointer; opacity:0.5; transition:opacity 0.2s;
+  font-size:12px; line-height:1;
+  background:none; border:none; color:inherit;
+}
+.file-tag .remove-file:hover { opacity:1; }
+
+.file-tags-area {
+  display:flex; flex-wrap:wrap; gap:6px;
+  max-width:700px; margin:0 auto 2px;
+}
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:84px; left:50%;
+  transform:translateX(-50%) translateY(40px);
+  background:rgba(255,255,255,0.07);
+  border:0.5px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.8);
+  padding:10px 20px; border-radius:9999px;
+  font-size:11px; letter-spacing:0.08em;
+  transition:transform 0.4s cubic-bezier(0.19,1,0.22,1), opacity 0.4s;
+  z-index:999; white-space:nowrap; opacity:0;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* ── WATERMARK ── */
+.watermark {
+  position:fixed; bottom:0; left:0; right:0; z-index:2; pointer-events:none;
+  text-align:center; font-size:clamp(3rem,8vw,7rem);
+  font-weight:100; line-height:1; letter-spacing:-0.02em;
+  color:rgba(255,255,255,0.012); user-select:none; padding-bottom:8px;
+}
+
+/* ── MOBILE ── */
+@media (max-width:600px) {
+  .input-bar { padding:10px 10px 14px; }
+  .messages-inner { padding:0 12px; }
+  .msg-block { max-width:90%; }
+  .corner--tl,.corner--br { display:none; }
+  .welcome-prompts { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="corner corner--tl"></div>
+<div class="corner corner--br"></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-left">
+    <button class="btn-sidebar" id="btnSidebar" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="brand-name">ONYX</span>
+  </div>
+  <div class="header-right">
+    <button class="btn-new-chat" id="btnNewChat">New Chat</button>
+    <div class="user-avatar" id="userAvatar" title="Account">Z</div>
+  </div>
+</header>
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <p class="sidebar-section-title">Recent</p>
+  <div class="sidebar-item active">
+    <span class="sidebar-icon">◈</span>
+    <span>New conversation</span>
+  </div>
+  <div id="historyList"></div>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="sidebar-footer-link">← Home</a>
+    <a href="#" class="sidebar-footer-link" id="linkSignOut">Sign Out</a>
+    <a href="#" class="sidebar-footer-link">Privacy · Terms</a>
+  </div>
+</aside>
+
+<!-- ══ CHAT WRAPPER ══ -->
+<div class="chat-wrapper">
+
+  <!-- Welcome screen (estado inicial) -->
+  <div id="welcome-screen">
+    <span class="welcome-greeting" id="welcomeGreeting">Welcome, Zenith User</span>
+    <p class="welcome-sub">What can I help with?</p>
+    <div class="welcome-prompts">
+      <button class="prompt-chip" data-prompt="Explain quantum computing simply">Explain quantum computing</button>
+      <button class="prompt-chip" data-prompt="Write a short professional email declining a meeting">Draft a professional email</button>
+      <button class="prompt-chip" data-prompt="What are the best productivity habits for deep work?">Deep work habits</button>
+      <button class="prompt-chip" data-prompt="Give me a creative name for a luxury tech startup">Name a tech startup</button>
+    </div>
+  </div>
+
+  <!-- Messages area -->
+  <div id="messages-container">
+    <div class="messages-inner" id="messagesInner">
+      <!-- Typing indicator -->
+      <div class="msg-row zenith" id="typingRow" style="display:none;">
+        <div class="msg-block">
+          <span class="msg-label">Zenith</span>
+          <div class="typing-indicator" id="typingIndicator" style="display:flex;">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- File tags -->
+  <div class="file-tags-area" id="fileTagsArea"></div>
+
+  <!-- Input bar -->
+  <div class="input-bar">
+    <div class="input-inner">
+      <div class="input-box">
+        <!-- Attach -->
+        <button class="btn-attach" id="btnAttach" title="Attach file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        <input type="file" id="fileInput" style="display:none" multiple accept="image/*,.pdf,.txt,.doc,.docx">
+
+        <!-- Textarea -->
+        <textarea
+          id="chat-input"
+          rows="1"
+          placeholder="Message Zenith..."
+          autocomplete="off"
+          spellcheck="false"
+        ></textarea>
+
+        <!-- Right controls -->
+        <div class="input-right">
+          <button class="btn-mic" id="btnMic" title="Voice input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2" width="6" height="11" rx="3"/>
+              <path d="M5 10a7 7 0 0 0 14 0"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="9" y1="22" x2="15" y2="22"/>
+            </svg>
+          </button>
+          <button class="btn-send" id="btnSend" disabled title="Send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="19" x2="12" y2="5"/>
+              <polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="input-hint">Zenith AI · Onyx Corporation</p>
+    </div>
+  </div>
+
+</div><!-- /.chat-wrapper -->
+
+<div class="watermark">Zenith</div>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     FIREBASE + CHAT LOGIC
+═══════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+                             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* ── Firebase config ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyCB1B3c2KQpxz6jg3zb42KFElKvUEJwIys",
+  authDomain:        "zenithai-7402f.firebaseapp.com",
+  projectId:         "zenithai-7402f",
+  storageBucket:     "zenithai-7402f.firebasestorage.app",
+  messagingSenderId: "867733192607",
+  appId:             "1:867733192607:web:c54dcd65f6f8fdd15b47aa",
+  measurementId:     "G-8X614XE6XB"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+/* ── DOM Refs ── */
+const welcomeScreen    = document.getElementById('welcome-screen');
+const welcomeGreeting  = document.getElementById('welcomeGreeting');
+const messagesInner    = document.getElementById('messagesInner');
+const messagesContainer= document.getElementById('messages-container');
+const chatInput        = document.getElementById('chat-input');
+const btnSend          = document.getElementById('btnSend');
+const btnAttach        = document.getElementById('btnAttach');
+const fileInput        = document.getElementById('fileInput');
+const fileTagsArea     = document.getElementById('fileTagsArea');
+const btnMic           = document.getElementById('btnMic');
+const btnNewChat       = document.getElementById('btnNewChat');
+const btnSidebar       = document.getElementById('btnSidebar');
+const sidebar          = document.getElementById('sidebar');
+const sidebarOverlay   = document.getElementById('sidebarOverlay');
+const userAvatar       = document.getElementById('userAvatar');
+const typingRow        = document.getElementById('typingRow');
+const historyList      = document.getElementById('historyList');
+const linkSignOut      = document.getElementById('linkSignOut');
+const toast            = document.getElementById('toast');
+
+/* ── State ── */
+let conversationStarted = false;
+let isTyping            = false;
+let attachedFiles       = [];
+let chatHistory         = []; // { role, content }
+let savedChats          = JSON.parse(localStorage.getItem('zenith_chats') || '[]');
+let currentChatId       = null;
+let recognition         = null;
+let micActive           = false;
+
+/* ── User Auth ── */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+  // Welcome greeting
+  const firstName = user.displayName
+    ? user.displayName.split(' ')[0]
+    : 'Zenith User';
+  welcomeGreeting.textContent = `Welcome, ${firstName}`;
+
+  // Avatar
+  if (user.photoURL) {
+    userAvatar.innerHTML = `<img src="${user.photoURL}" alt="avatar">`;
+  } else {
+    userAvatar.textContent = firstName.charAt(0).toUpperCase();
+  }
+});
+
+/* ── Sign Out ── */
+linkSignOut.addEventListener('click', async e => {
+  e.preventDefault();
+  await signOut(auth);
+  window.location.href = 'login.html';
+});
+
+/* ── Toast ── */
+function showToast(msg, duration = 3000) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+/* ── Sidebar ── */
+btnSidebar.addEventListener('click', () => toggleSidebar());
+sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+function toggleSidebar(force) {
+  const open = force !== undefined ? force : !sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', open);
+  sidebarOverlay.classList.toggle('visible', open);
+}
+
+/* ── Render History in Sidebar ── */
+function renderHistoryList() {
+  historyList.innerHTML = '';
+  const recent = savedChats.slice(-12).reverse();
+  recent.forEach(chat => {
+    const el = document.createElement('div');
+    el.className = 'sidebar-item' + (chat.id === currentChatId ? ' active' : '');
+    const label = chat.title || 'Untitled';
+    el.innerHTML = `<span class="sidebar-icon" style="opacity:0.3">◇</span><span title="${label}">${label.slice(0,28)}${label.length>28?'…':''}</span>`;
+    el.addEventListener('click', () => loadChat(chat.id));
+    historyList.appendChild(el);
+  });
+}
+
+/* ── Load a saved chat ── */
+function loadChat(id) {
+  const chat = savedChats.find(c => c.id === id);
+  if (!chat) return;
+  currentChatId = id;
+  chatHistory   = [...chat.messages];
+  // Clear UI
+  messagesInner.innerHTML = '';
+  appendTypingRow();
+  // Hide welcome
+  hideWelcome();
+  conversationStarted = true;
+  // Render messages
+  chat.messages.forEach(m => {
+    appendBubble(m.role === 'user' ? 'user' : 'zenith', m.content, false);
+  });
+  toggleSidebar(false);
+  renderHistoryList();
+}
+
+function appendTypingRow() {
+  messagesInner.appendChild(typingRow);
+}
+
+/* ── Hide welcome screen ── */
+function hideWelcome() {
+  if (!conversationStarted) {
+    welcomeScreen.style.animation = 'none';
+    welcomeScreen.style.opacity   = '0';
+    welcomeScreen.style.transition = 'opacity 0.35s ease';
+    requestAnimationFrame(() => {
+      welcomeScreen.style.opacity = '0';
+      setTimeout(() => { welcomeScreen.style.display = 'none'; }, 350);
+    });
+    conversationStarted = true;
+  }
+}
+
+/* ── Textarea auto-resize ── */
+chatInput.addEventListener('input', () => {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 160) + 'px';
+  btnSend.disabled = chatInput.value.trim() === '' && attachedFiles.length === 0;
+});
+
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!btnSend.disabled) sendMessage();
+  }
+});
+
+/* ── Prompt chips ── */
+document.querySelectorAll('.prompt-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chatInput.value = chip.dataset.prompt;
+    chatInput.dispatchEvent(new Event('input'));
+    chatInput.focus();
+  });
+});
+
+/* ── Attach files ── */
+btnAttach.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => {
+  Array.from(fileInput.files).forEach(f => {
+    if (!attachedFiles.find(x => x.name === f.name)) {
+      attachedFiles.push(f);
+      renderFileTag(f);
+    }
+  });
+  fileInput.value = '';
+  btnSend.disabled = chatInput.value.trim() === '' && attachedFiles.length === 0;
+});
+
+function renderFileTag(file) {
+  const tag = document.createElement('div');
+  tag.className = 'file-tag';
+  tag.dataset.name = file.name;
+  tag.innerHTML = `<span>📎 ${file.name.length > 22 ? file.name.slice(0,22)+'…' : file.name}</span>
+    <button class="remove-file" title="Remove">✕</button>`;
+  tag.querySelector('.remove-file').addEventListener('click', () => {
+    attachedFiles = attachedFiles.filter(f => f.name !== file.name);
+    tag.remove();
+    btnSend.disabled = chatInput.value.trim() === '' && attachedFiles.length === 0;
+  });
+  fileTagsArea.appendChild(tag);
+}
+
+/* ── Mic / Speech ── */
+btnMic.addEventListener('click', () => {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    showToast('Voice input not supported in this browser.');
+    return;
+  }
+  if (micActive) {
+    recognition && recognition.stop();
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = navigator.language || 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    micActive = true;
+    btnMic.classList.add('recording');
+  };
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    chatInput.value += (chatInput.value ? ' ' : '') + transcript;
+    chatInput.dispatchEvent(new Event('input'));
+  };
+  recognition.onend = () => {
+    micActive = false;
+    btnMic.classList.remove('recording');
+  };
+  recognition.onerror = () => {
+    micActive = false;
+    btnMic.classList.remove('recording');
+  };
+  recognition.start();
+});
+
+/* ── New Chat ── */
+btnNewChat.addEventListener('click', () => {
+  if (chatHistory.length > 0) saveCurrentChat();
+  startNewChat();
+  toggleSidebar(false);
+});
+
+function startNewChat() {
+  chatHistory = [];
+  currentChatId = null;
+  attachedFiles = [];
+  fileTagsArea.innerHTML = '';
+  conversationStarted = false;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  btnSend.disabled = true;
+
+  // Clear messages (keep typing row)
+  messagesInner.innerHTML = '';
+  messagesInner.appendChild(typingRow);
+  typingRow.style.display = 'none';
+
+  // Show welcome
+  welcomeScreen.style.display = '';
+  welcomeScreen.style.opacity = '0';
+  requestAnimationFrame(() => {
+    welcomeScreen.style.transition = 'opacity 0.5s ease';
+    welcomeScreen.style.opacity = '1';
+  });
+}
+
+/* ── Save current chat ── */
+function saveCurrentChat() {
+  if (chatHistory.length === 0) return;
+  const firstUser = chatHistory.find(m => m.role === 'user');
+  const title = firstUser
+    ? firstUser.content.slice(0, 42) + (firstUser.content.length > 42 ? '…' : '')
+    : 'Conversation';
+  const id = currentChatId || Date.now().toString();
+  currentChatId = id;
+  const existing = savedChats.findIndex(c => c.id === id);
+  const record = { id, title, messages: chatHistory, ts: Date.now() };
+  if (existing >= 0) savedChats[existing] = record;
+  else savedChats.push(record);
+  if (savedChats.length > 40) savedChats = savedChats.slice(-40);
+  localStorage.setItem('zenith_chats', JSON.stringify(savedChats));
+  renderHistoryList();
+}
+
+/* ── Append bubble ── */
+function appendBubble(who, text, animate = true) {
+  // Move typing row to bottom
+  messagesInner.appendChild(typingRow);
+
+  const row   = document.createElement('div');
+  row.className = `msg-row ${who}`;
+  if (!animate) row.style.animation = 'none';
+
+  const block  = document.createElement('div');
+  block.className = 'msg-block';
+
+  const label  = document.createElement('span');
+  label.className = 'msg-label';
+  label.textContent = who === 'user' ? 'You' : 'Zenith';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = formatMessage(text);
+
+  block.appendChild(label);
+  block.appendChild(bubble);
+
+  // Action bar only for Zenith
+  if (who === 'zenith') {
+    const actions = document.createElement('div');
+    actions.className = 'msg-actions';
+    actions.innerHTML = `
+      <button class="action-btn btn-copy" title="Copy response">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+      </button>
+      <button class="action-btn btn-like" title="Good response">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+        </svg>
+      </button>
+      <button class="action-btn btn-dislike" title="Poor response">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+        </svg>
+      </button>
+      <div class="action-sep"></div>
+      <span class="disclaimer-text">Zenith es una IA y puede cometer errores. Por favor, verifique su respuesta.</span>
+    `;
+
+    // Copy
+    actions.querySelector('.btn-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+    });
+
+    // Like / Dislike
+    const likeBtn    = actions.querySelector('.btn-like');
+    const dislikeBtn = actions.querySelector('.btn-dislike');
+    likeBtn.addEventListener('click', () => {
+      likeBtn.classList.toggle('active-like');
+      dislikeBtn.classList.remove('active-dislike');
+    });
+    dislikeBtn.addEventListener('click', () => {
+      dislikeBtn.classList.toggle('active-dislike');
+      likeBtn.classList.remove('active-like');
+    });
+
+    block.appendChild(actions);
+  }
+
+  row.appendChild(block);
+  messagesInner.insertBefore(row, typingRow);
+  scrollToBottom();
+}
+
+/* ── Format message text ── */
+function formatMessage(text) {
+  // Basic markdown-ish: bold, code, line breaks
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:4px;font-size:0.92em;font-family:monospace;">$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
+/* ── Scroll to bottom ── */
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  });
+}
+
+/* ── Show / hide typing ── */
+function showTyping() {
+  typingRow.style.display = 'flex';
+  messagesInner.appendChild(typingRow);
+  scrollToBottom();
+}
+function hideTyping() {
+  typingRow.style.display = 'none';
+}
+
+/* ── Send message ── */
+btnSend.addEventListener('click', sendMessage);
+
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text && attachedFiles.length === 0) return;
+  if (isTyping) return;
+
+  // Hide welcome on first message
+  if (!conversationStarted) hideWelcome();
+
+  // Build display content
+  let displayText = text;
+  if (attachedFiles.length > 0) {
+    const names = attachedFiles.map(f => f.name).join(', ');
+    displayText = (text ? text + '\n\n' : '') + `📎 ${names}`;
+  }
+
+  // Append user bubble
+  appendBubble('user', displayText || '📎 File(s) attached');
+
+  // Update history
+  chatHistory.push({ role: 'user', content: text || `[Files: ${attachedFiles.map(f=>f.name).join(', ')}]` });
+
+  // Clear input
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  attachedFiles = [];
+  fileTagsArea.innerHTML = '';
+  btnSend.disabled = true;
+  isTyping = true;
+
+  showTyping();
+
+  try {
+    // Build messages for API — keep last 20 turns for context
+    const apiMessages = chatHistory.slice(-20).map(m => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      content: m.content
+    }));
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: "You are Zenith, an advanced AI assistant created by Onyx Corporation. You are intelligent, precise, and refined in your responses. Keep answers clear and helpful. Format with **bold** for key terms and `code` for technical items when appropriate.",
+        messages: apiMessages
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) throw new Error(data.error.message);
+
+    const aiText = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    hideTyping();
+    appendBubble('zenith', aiText);
+    chatHistory.push({ role: 'assistant', content: aiText });
+    saveCurrentChat();
+
+  } catch (err) {
+    hideTyping();
+    appendBubble('zenith', `I encountered an issue processing that request. Please try again.\n\n_Error: ${err.message}_`);
+    console.error('Zenith API error:', err);
+  }
+
+  isTyping = false;
+}
+
+/* ── Init ── */
+renderHistoryList();
+typingRow.style.display = 'none';
+</script>
+
+</body>
+</html>
