@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZENITH AI — Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    min-height:100%; background:#000005;
+    font-family:'Inter', sans-serif;
+    color:white; overflow:hidden;
+  }
+
+  #starfield { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .ambient {
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255,255,255,0.025) 0%, transparent 70%);
+  }
+
+  header {
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:20px 32px;
+    display:flex; justify-content:space-between; align-items:center;
+    background:rgba(0,0,5,0.6); backdrop-filter:blur(40px);
+    border-bottom:0.5px solid rgba(255,255,255,0.08);
+  }
+  .brand { font-size:13px; font-weight:300; letter-spacing:0.42em; text-transform:uppercase; }
+  .brand-corp { font-size:9px; font-weight:300; letter-spacing:0.32em; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+
+  main {
+    position:relative; z-index:10;
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:80px 24px;
+  }
+
+  /* Glass card */
+  .login-card {
+    width:100%; max-width:400px;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(40px);
+    border:0.5px solid rgba(255,255,255,0.12);
+    border-radius:16px;
+    padding:48px 40px;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    opacity:0; animation:fadeUp 1s cubic-bezier(0.19,1,0.22,1) 0.2s forwards;
+    position:relative; overflow:hidden;
+  }
+  .login-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:0.5px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  }
+
+  /* Icon orb */
+  .icon-orb {
+    width:56px; height:56px; border-radius:50%;
+    border:0.5px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.04);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; margin-bottom:28px;
+    opacity:0; animation:fadeUp 0.9s ease 0.4s forwards;
+  }
+
+  /* CURSIVE brand title in card */
+  .card-brand {
+    font-family:'Great Vibes', cursive;
+    font-size:2rem; color:white; margin-bottom:8px;
+    opacity:0; animation:fadeUp 0.9s ease 0.5s forwards;
+  }
+  .card-sub {
+    font-size:11px; font-weight:300;
+    color:rgba(255,255,255,0.3); letter-spacing:0.1em;
+    margin-bottom:36px;
+    opacity:0; animation:fadeUp 0.9s ease 0.55s forwards;
+  }
+
+  /* Auth buttons */
+  .auth-btn {
+    width:100%; padding:14px 20px;
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    background:rgba(255,255,255,0.05);
+    border:0.5px solid rgba(255,255,255,0.14);
+    border-radius:10px;
+    color:white; cursor:pointer;
+    font-size:11px; font-weight:400; letter-spacing:0.2em; text-transform:uppercase;
+    transition:background 0.35s, border-color 0.35s, transform 0.2s;
+    opacity:0; animation:fadeUp 0.9s ease 0.65s forwards;
+    margin-bottom:10px;
+  }
+  .auth-btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.28); transform:translateY(-1px); }
+  .auth-btn:active { transform:scale(0.98); }
+  .auth-btn.phone { animation-delay:0.72s; }
+
+  .divider {
+    width:100%; display:flex; align-items:center; gap:16px;
+    margin:6px 0 6px;
+    opacity:0; animation:fadeUp 0.9s ease 0.7s forwards;
+  }
+  .divider-line { flex:1; height:0.5px; background:rgba(255,255,255,0.08); }
+  .divider-text { font-size:9px; letter-spacing:0.3em; color:rgba(255,255,255,0.2); }
+
+  /* Footer links */
+  .card-footer {
+    margin-top:32px; padding-top:24px;
+    border-top:0.5px solid rgba(255,255,255,0.07);
+    width:100%;
+    opacity:0; animation:fadeUp 0.9s ease 0.8s forwards;
+  }
+  .footer-brand {
+    font-size:9px; letter-spacing:0.25em; text-transform:uppercase;
+    color:rgba(255,255,255,0.15); margin-bottom:12px;
+  }
+  .footer-links { display:flex; justify-content:center; gap:24px; }
+  .footer-links a {
+    font-size:9px; letter-spacing:0.25em; text-transform:uppercase;
+    color:rgba(255,255,255,0.25); text-decoration:none;
+    transition:color 0.3s;
+  }
+  .footer-links a:hover { color:rgba(255,255,255,0.6); }
+
+  /* Spinner */
+  .spinner {
+    width:16px; height:16px;
+    border:1.5px solid rgba(255,255,255,0.2);
+    border-top-color:white; border-radius:50%;
+    animation:spin 0.7s linear infinite; display:none;
+  }
+  @keyframes spin { to{transform:rotate(360deg);} }
+
+  /* Watermark */
+  .watermark {
+    position:fixed; bottom:0; left:0; right:0; z-index:5; pointer-events:none;
+    text-align:center;
+    font-size:clamp(3rem, 8vw, 7rem);
+    font-weight:100; letter-spacing:-0.02em; line-height:1;
+    color:rgba(255,255,255,0.018);
+    font-family:'Inter', sans-serif;
+    user-select:none;
+    padding-bottom:8px;
+  }
+
+  /* Toast */
+  .toast {
+    position:fixed; bottom:40px; left:50%;
+    transform:translateX(-50%) translateY(60px);
+    background:rgba(255,255,255,0.08); backdrop-filter:blur(20px);
+    border:0.5px solid rgba(255,255,255,0.18);
+    color:white; padding:11px 22px;
+    border-radius:9999px; font-size:11px; letter-spacing:0.08em;
+    transition:transform 0.4s cubic-bezier(0.19,1,0.22,1);
+    z-index:999; white-space:nowrap;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.error { border-color:rgba(255,80,80,0.35); background:rgba(255,40,40,0.08); }
+
+  .corner { position:fixed; z-index:5; pointer-events:none; }
+  .corner--tl { top:32px; left:32px; }
+  .corner--br { bottom:32px; right:32px; }
+  .corner--tl::before,.corner--tl::after,.corner--br::before,.corner--br::after {
+    content:''; position:absolute; background:rgba(255,255,255,0.08);
+  }
+  .corner--tl::before{width:40px;height:0.5px;}
+  .corner--tl::after{width:0.5px;height:40px;}
+  .corner--br::before{width:40px;height:0.5px;bottom:0;right:0;}
+  .corner--br::after{width:0.5px;height:40px;bottom:0;right:0;}
+
+  @keyframes fadeUp {
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+</style>
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="ambient"></div>
+<div class="corner corner--tl"></div>
+<div class="corner corner--br"></div>
+
+<header>
+  <span class="brand">Zenith</span>
+  <span class="brand-corp">Onyx Corporation</span>
+</header>
+
+<main>
+  <div class="login-card">
+    <div class="icon-orb">⊚</div>
+    <div class="card-brand">Zenith AI</div>
+    <p class="card-sub">Link your identity to begin.</p>
+
+    <button class="auth-btn" id="btnGoogle">
+      <svg width="17" height="17" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      <span id="googleText">Continue with Google</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">or</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <button class="auth-btn phone" id="btnPhone">
+      <span style="font-size:16px;opacity:0.6">📱</span>
+      Continue with Phone
+    </button>
+
+    <div class="card-footer">
+      <p class="footer-brand">Zenith AI — Onyx Corporation</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="watermark">Define Your Future</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAnalytics }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+import {
+  getAuth, GoogleAuthProvider,
+  signInWithPopup, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* Stars */
+const sf=document.getElementById('starfield');
+for(let i=0;i<200;i++){
+  const d=document.createElement('div');
+  const s=Math.random()*1.3+0.3,a=(Math.random()*0.35+0.04).toFixed(2);
+  d.style.cssText=`position:absolute;border-radius:50%;background:white;width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${a};animation:tw ${(Math.random()*5+3).toFixed(1)}s ${(Math.random()*4).toFixed(1)}s ease-in-out infinite alternate;`;
+  sf.appendChild(d);
+}
+const ss=document.createElement('style');
+ss.textContent=`@keyframes tw{from{opacity:0.02}to{opacity:0.4}}`;
+document.head.appendChild(ss);
+
+const firebaseConfig = {
+  apiKey:"AIzaSyCB1B3c2KQpxz6jg3zb42KFElKvUEJwIys",
+  authDomain:"zenithai-7402f.firebaseapp.com",
+  projectId:"zenithai-7402f",
+  storageBucket:"zenithai-7402f.firebasestorage.app",
+  messagingSenderId:"867733192607",
+  appId:"1:867733192607:web:c54dcd65f6f8fdd15b47aa",
+  measurementId:"G-8X614XE6XB"
+};
+
+const app      = initializeApp(firebaseConfig);
+const analytics= getAnalytics(app);
+const auth     = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const btnGoogle  = document.getElementById('btnGoogle');
+const googleText = document.getElementById('googleText');
+const spinner    = document.getElementById('spinner');
+const btnPhone   = document.getElementById('btnPhone');
+const toast      = document.getElementById('toast');
+
+function showToast(msg, err=false) {
+  toast.textContent=msg;
+  toast.className='toast'+(err?' error':'');
+  setTimeout(()=>toast.classList.add('show'),10);
+  setTimeout(()=>toast.classList.remove('show'),3500);
+}
+
+onAuthStateChanged(auth, user=>{
+  if(user){
+    showToast('✓ Session active — redirecting...');
+    setTimeout(()=>{ window.location.href='language.html'; },1000);
+  }
+});
+
+btnGoogle.addEventListener('click', async ()=>{
+  googleText.style.display='none';
+  spinner.style.display='block';
+  btnGoogle.disabled=true;
+  try {
+    const r=await signInWithPopup(auth,provider);
+    showToast(`✓ Welcome, ${r.user.displayName}`);
+    setTimeout(()=>{ window.location.href='language.html'; },1200);
+  } catch(e){
+    googleText.style.display='';
+    spinner.style.display='none';
+    btnGoogle.disabled=false;
+    if(e.code==='auth/popup-closed-by-user') showToast('Window closed. Try again.',true);
+    else showToast('Sign-in error. Try again.',true);
+  }
+});
+
+btnPhone.addEventListener('click',()=>{ showToast('Phone auth — coming soon.'); });
+</script>
+</body>
+</html>
