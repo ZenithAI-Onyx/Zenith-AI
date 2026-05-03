@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zenith AI - Language Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#c6c6c6",
+                    "primary-container": "#000000",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-variant": "#353535",
+                    "on-surface-variant": "#cfc4c5",
+                    "surface": "#131313",
+                    "outline-variant": "#4c4546",
+                    "secondary": "#c6c6c7",
+                    "on-secondary-fixed-variant": "#454747",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#2a2a2a",
+                    "on-background": "#e2e2e2",
+                    "surface-container": "#1f1f1f",
+                    "tertiary-container": "#000000",
+                    "primary-fixed": "#e2e2e2",
+                    "secondary-container": "#454747",
+                    "on-error": "#690005",
+                    "on-tertiary": "#303030",
+                    "on-surface": "#e2e2e2",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-secondary": "#2f3131",
+                    "secondary-fixed": "#e2e2e2",
+                    "background": "#131313",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "on-secondary-container": "#b4b5b5",
+                    "surface-bright": "#393939",
+                    "on-primary-fixed": "#1b1b1b",
+                    "tertiary-fixed-dim": "#c6c6c6",
+                    "inverse-surface": "#e2e2e2",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "primary": "#c6c6c6",
+                    "on-tertiary-container": "#757575",
+                    "on-tertiary-fixed-variant": "#474747",
+                    "outline": "#988e90",
+                    "tertiary": "#c6c6c6",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "inverse-primary": "#5e5e5e",
+                    "surface-dim": "#131313",
+                    "surface-container-highest": "#353535",
+                    "on-tertiary-fixed": "#1b1b1b",
+                    "surface-container-low": "#1b1b1b",
+                    "on-primary-container": "#757575",
+                    "on-primary": "#303030",
+                    "inverse-on-surface": "#303030",
+                    "error": "#ffb4ab",
+                    "on-primary-fixed-variant": "#474747"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "section-gap": "80px",
+                    "margin-safe": "40px",
+                    "container-max": "1200px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "h2": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display": ["Inter"],
+                    "h1": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.02em", "fontWeight": "300"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "100"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.03em", "fontWeight": "200"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "300"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            overflow-x: hidden;
+        }
+        .cosmic-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glass-surface {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .hairline-border {
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .text-silver {
+            color: #A1A1AA;
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col items-center justify-center font-body-md">
+<!-- Cosmic Background Element -->
+<div class="cosmic-glow"></div>
+<!-- Top Navigation Anchor (Manual application of JSON styles) -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-[40px] border-b-[0.5px] border-white/15">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-[1200px] mx-auto">
+<div class="text-2xl font-light tracking-[0.4em] text-white font-['Inter'] uppercase">ZENITH</div>
+<nav class="hidden md:flex gap-12">
+<a class="font-['Inter'] text-[12px] tracking-widest uppercase transition-all duration-500 hover:bg-white/10 text-white font-medium" href="#">LANGUAGE</a>
+<a class="font-['Inter'] text-[12px] tracking-widest uppercase transition-all duration-500 hover:bg-white/10 text-white/40" href="#">VOICE</a>
+<a class="font-['Inter'] text-[12px] tracking-widest uppercase transition-all duration-500 hover:bg-white/10 text-white/40" href="#">ACCESS</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-white text-xl cursor-pointer hover:bg-white/10 transition-all duration-500 p-2 rounded-full">help_outline</span>
+</div>
+</div>
+</header>
+<!-- Main Content: Language Selection -->
+<main class="relative z-10 w-full max-w-[1200px] px-gutter flex flex-col items-center">
+<div class="mb-section-gap text-center">
+<span class="font-label-caps text-label-caps text-white/40 mb-4 block tracking-[0.3em]">INITIALIZATION</span>
+<h1 class="font-display text-display text-white mb-2">SELECT LANGUAGE</h1>
+<p class="font-body-lg text-body-lg text-silver/60 max-w-md mx-auto">Choose your preferred medium of interaction for the Zenith AI interface.</p>
+</div>
+<!-- Glass Container -->
+<div class="glass-surface w-full max-w-2xl rounded-xl p-8 md:p-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Language Option: English (Selected) -->
+<button class="flex items-center justify-between w-full p-6 rounded-lg hairline-border bg-white/10 transition-all duration-500 group">
+<div class="flex flex-col items-start">
+<span class="font-h2 text-h2 text-white">English</span>
+<span class="font-label-caps text-[10px] text-white/40 mt-1 uppercase tracking-widest">Global standard</span>
+</div>
+<div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+</button>
+<!-- Language Option: Japanese -->
+<button class="flex items-center justify-between w-full p-6 rounded-lg hairline-border hover:bg-white/5 transition-all duration-500 group">
+<div class="flex flex-col items-start">
+<span class="font-h2 text-h2 text-white/60 group-hover:text-white transition-colors">日本語</span>
+<span class="font-label-caps text-[10px] text-white/20 mt-1 uppercase tracking-widest group-hover:text-white/40">Japanese</span>
+</div>
+</button>
+<!-- Language Option: French -->
+<button class="flex items-center justify-between w-full p-6 rounded-lg hairline-border hover:bg-white/5 transition-all duration-500 group">
+<div class="flex flex-col items-start">
+<span class="font-h2 text-h2 text-white/60 group-hover:text-white transition-colors">Français</span>
+<span class="font-label-caps text-[10px] text-white/20 mt-1 uppercase tracking-widest group-hover:text-white/40">French</span>
+</div>
+</button>
+<!-- Language Option: German -->
+<button class="flex items-center justify-between w-full p-6 rounded-lg hairline-border hover:bg-white/5 transition-all duration-500 group">
+<div class="flex flex-col items-start">
+<span class="font-h2 text-h2 text-white/60 group-hover:text-white transition-colors">Deutsch</span>
+<span class="font-label-caps text-[10px] text-white/20 mt-1 uppercase tracking-widest group-hover:text-white/40">German</span>
+</div>
+</button>
+</div>
+<!-- Action Button -->
+<div class="mt-12 flex justify-end">
+<button class="px-10 py-4 bg-white text-black font-label-caps text-label-caps tracking-[0.2em] uppercase rounded-full hover:bg-silver transition-all duration-500 scale-100 active:scale-95">
+                    Next
+                </button>
+</div>
+</div>
+<!-- Secondary Content: Visual Decor -->
+<div class="mt-20 w-full flex justify-center opacity-30">
+<div class="h-[1px] w-1/4 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+</div>
+</main>
+<!-- Bottom Navigation (Applied from JSON) -->
+<nav class="fixed bottom-10 w-auto z-50 flex gap-12 items-center bg-white/5 backdrop-blur-[40px] rounded-full border-[0.5px] border-white/15 px-10 py-4">
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-white font-semibold after:content-[''] after:block after:w-1 after:h-1 after:bg-white after:rounded-full after:mx-auto after:mt-1">
+<span class="material-symbols-outlined text-xl">language</span>
+<span class="font-['Inter'] text-[10px] tracking-widest uppercase">Language</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-white/30 hover:text-white/60 transition-colors">
+<span class="material-symbols-outlined text-xl">mic</span>
+<span class="font-['Inter'] text-[10px] tracking-widest uppercase">Voice</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-white/30 hover:text-white/60 transition-colors">
+<span class="material-symbols-outlined text-xl">google</span>
+<span class="font-['Inter'] text-[10px] tracking-widest uppercase">Access</span>
+</div>
+</nav>
+<!-- Footer Decorative Image Section -->
+<div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+<img class="w-full h-full object-cover opacity-10 mix-blend-screen" data-alt="A highly detailed cinematic shot of Earth's atmosphere from space at night, with subtle glowing city lights and a thin blue atmospheric line. The scene is dominated by vast, deep black space with professional, high-fidelity minimalism. The lighting is ethereal and soft, evoking a sense of tranquility, power, and technological advancement consistent with a premium AI brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXYCLrnNSAgRSaOfqz2tw_qT0kbnDwKaKpAK9qRjIQKX6_S5E1pDl-hi3S89twn1Sy2OEW_zPHKA_RfLU1gCRDKVZaLJbm55Y-tlHUdDcQ4MakJ9jSCq-GlutxSOdXv4XAYE7sq2VmZaR0VjIU14RgCk-SajzawGkm9RuBOa_kQFWvG3qNhpIpdxrDAro8Z97SBNP-eWS53qhjMQlBiTXUmaL7vdjIjWR-rNPS47i1k_vCwapUhj6bYB5KoSKZKyrzWVVxTzR37Kij"/>
+</div>
+</body></html>

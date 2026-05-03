@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#c6c6c6",
+                        "primary-container": "#000000",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-variant": "#353535",
+                        "on-surface-variant": "#cfc4c5",
+                        "surface": "#131313",
+                        "outline-variant": "#4c4546",
+                        "secondary": "#c6c6c7",
+                        "on-secondary-fixed-variant": "#454747",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#2a2a2a",
+                        "on-background": "#e2e2e2",
+                        "surface-container": "#1f1f1f",
+                        "tertiary-container": "#000000",
+                        "primary-fixed": "#e2e2e2",
+                        "secondary-container": "#454747",
+                        "on-error": "#690005",
+                        "on-tertiary": "#303030",
+                        "on-surface": "#e2e2e2",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-secondary": "#2f3131",
+                        "secondary-fixed": "#e2e2e2",
+                        "background": "#131313",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-secondary-container": "#b4b5b5",
+                        "surface-bright": "#393939",
+                        "on-primary-fixed": "#1b1b1b",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "inverse-surface": "#e2e2e2",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "primary": "#c6c6c6",
+                        "on-tertiary-container": "#757575",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "outline": "#988e90",
+                        "tertiary": "#c6c6c6",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "inverse-primary": "#5e5e5e",
+                        "surface-dim": "#131313",
+                        "surface-container-highest": "#353535",
+                        "on-tertiary-fixed": "#1b1b1b",
+                        "surface-container-low": "#1b1b1b",
+                        "on-primary-container": "#757575",
+                        "on-primary": "#303030",
+                        "inverse-on-surface": "#303030",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#474747"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "section-gap": "80px",
+                        "margin-safe": "40px",
+                        "container-max": "1200px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.02em", "fontWeight": "300"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "100"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.03em", "fontWeight": "200"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "300"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e2e2e2;
+            overflow: hidden;
+        }
+        .cosmic-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(198, 198, 198, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .waveform-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+            width: 100%;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background selection:bg-white selection:text-black">
+<!-- Cosmic Background Layer -->
+<div class="cosmic-glow"></div>
+<!-- Top Navigation (Shell Implementation) -->
+<header class="fixed top-0 left-0 right-0 z-50 border-b-[0.5px] border-white/15 bg-transparent backdrop-blur-[40px]">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-[1200px] mx-auto">
+<div class="text-2xl font-light tracking-[0.4em] text-white font-['Inter'] uppercase">ZENITH</div>
+<div class="flex gap-8 items-center">
+<span class="material-symbols-outlined text-white hover:bg-white/10 transition-all duration-500 p-2 rounded-full cursor-pointer" data-icon="help_outline">help_outline</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-gutter">
+<div class="max-w-[1200px] w-full flex flex-col items-center gap-12">
+<!-- Voice Signature Identity Section -->
+<div class="text-center space-y-4">
+<h1 class="font-display text-display text-white">Create your voice signature.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
+                    Establish your unique biometric vocal identity for secure, hands-free authentication across the Zenith ecosystem.
+                </p>
+</div>
+<!-- Waveform Visualization -->
+<div class="w-full max-w-2xl h-32 flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 flex flex-col justify-around">
+<div class="waveform-line scale-x-75 opacity-10"></div>
+<div class="waveform-line scale-x-100"></div>
+<div class="waveform-line scale-x-50 opacity-20"></div>
+</div>
+<!-- Central Focus Point -->
+<div class="w-1 h-1 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]"></div>
+</div>
+<!-- Onboarding Actions -->
+<div class="flex flex-col items-center gap-8 w-full">
+<button class="group relative px-12 py-4 bg-white/5 backdrop-blur-[40px] border-[0.5px] border-white/15 rounded-full text-white font-label-caps uppercase transition-all duration-500 hover:bg-white hover:text-black hover:scale-[1.02] active:scale-95">
+                    Start Recording
+                </button>
+<!-- Secondary Info Cards (Bento-lite) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mt-12">
+<div class="p-8 bg-white/5 backdrop-blur-[40px] border-[0.5px] border-white/15 rounded-xl text-center space-y-4">
+<span class="material-symbols-outlined text-white/40 text-3xl" data-icon="security">security</span>
+<h3 class="font-h2 text-h2 text-white">Encrypted</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Your signature is hashed and stored in a decentralized vault.</p>
+</div>
+<div class="p-8 bg-white/5 backdrop-blur-[40px] border-[0.5px] border-white/15 rounded-xl text-center space-y-4">
+<span class="material-symbols-outlined text-white/40 text-3xl" data-icon="spatial_audio">spatial_audio</span>
+<h3 class="font-h2 text-h2 text-white">Biometric</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Analyzes pitch, frequency, and cadence for 99.9% accuracy.</p>
+</div>
+<div class="p-8 bg-white/5 backdrop-blur-[40px] border-[0.5px] border-white/15 rounded-xl text-center space-y-4">
+<span class="material-symbols-outlined text-white/40 text-3xl" data-icon="all_inclusive">all_inclusive</span>
+<h3 class="font-h2 text-h2 text-white">Universal</h3>
+<p class="font-body-md text-on-surface-variant text-sm">One signature for all linked devices and smart environments.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Navigation Shell (BottomNavBar Suppressed for Transactional Onboarding State) -->
+<!-- The user is in a focused onboarding task, navigation is minimized to focus on the action. -->
+<!-- Ambient Visual Elements -->
+<div class="fixed top-1/4 -left-20 w-96 h-96 bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-1/4 -right-20 w-96 h-96 bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Image for atmospheric context -->
+<div class="hidden">
+<img data-alt="A cinematic, high-fidelity visualization of sound waves morphing into a complex digital fingerprint. The aesthetic is deep OLED black with ethereal, razor-thin white light trails that define the edges of the sound waves. The atmosphere is quiet, powerful, and technologically advanced, reflecting the premium minimalism of the Zenith brand. Soft white glows emerge from the darkness, creating a sense of infinite cosmic scale." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD-OXZIbpz2ApciqmsBGirwQpcXcWEMb4ApvWFro8e4hq6Mfqbd37ocV_BVCD12B3Flp9peRNII3bWym-4lL4TEJP7Z7D30Ii2REjdLTeaJZB6yFm-fgqXVe4BaUYj0ODl4GnrNlYUPbny4Fj9TDLHi4JxIHl13e5n2cHmB_voQeiDQtgydi_K1POqlVzrAvbE707J7h9Oo6U5HXvC_md2QTeIq2vdesJy1j0glsovdN1WhxYMscr1q1yFQfpn6xmwfGOsqn3nwiTM"/>
+</div>
+</body></html>
