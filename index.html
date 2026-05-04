@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZENITH AI — Onyx Corporation</title>
+  <link rel="stylesheet" href="zenith-core.css"/>
+</head>
+<body class="page-index">
+
+<div id="starfield"></div>
+<div class="ambient"></div>
+<div class="corner corner--tl"></div>
+<div class="corner corner--br"></div>
+
+<div class="brand-header">
+  <span class="brand-name">Zenith</span>
+  <span class="brand-corp">Onyx Corporation</span>
+</div>
+
+<main class="main-index">
+  <span class="logo-zenith">Zenith</span>
+  <div class="subtitle">Artificial Intelligence</div>
+  <div class="tagline">Next Generation · Intelligence System</div>
+  <a href="language.html" class="btn-glass btn-letsgo">Let's Go</a>
+</main>
+
+<script>
+/* ── STARFIELD ── */
+(function initStarfield() {
+  const sf = document.getElementById('starfield');
+  const style = document.createElement('style');
+  style.textContent = '@keyframes tw{from{opacity:0.02}to{opacity:0.42}}';
+  document.head.appendChild(style);
+
+  for (let i = 0; i < 200; i++) {
+    const d   = document.createElement('div');
+    const s   = (Math.random() * 1.4 + 0.3).toFixed(2);
+    const a   = (Math.random() * 0.38 + 0.05).toFixed(2);
+    const dur = (Math.random() * 5 + 3).toFixed(1);
+    const del = (Math.random() * 4).toFixed(1);
+    d.style.cssText =
+      `position:absolute;border-radius:50%;background:white;` +
+      `width:${s}px;height:${s}px;` +
+      `left:${(Math.random()*100).toFixed(2)}%;` +
+      `top:${(Math.random()*100).toFixed(2)}%;` +
+      `opacity:${a};animation:tw ${dur}s ${del}s ease-in-out infinite alternate;`;
+    sf.appendChild(d);
+  }
+})();
+</script>
+
+</body>
+</html>

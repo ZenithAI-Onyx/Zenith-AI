@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZENITH AI — Language</title>
+  <link rel="stylesheet" href="zenith-core.css"/>
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="ambient"></div>
+<div class="corner corner--tl"></div>
+<div class="corner corner--br"></div>
+
+<header>
+  <span class="brand">Zenith</span>
+  <nav>
+    <span class="nav-link active">Language</span>
+    <span class="nav-link" onclick="window.location.href='voice.html'">Voice</span>
+    <span class="nav-link" onclick="window.location.href='login.html'">Access</span>
+  </nav>
+</header>
+
+<main>
+  <div class="step-label" data-i18n="step">Initialization · Step 01</div>
+  <h1 class="page-title" data-i18n="title">Select Language</h1>
+  <p class="page-desc" data-i18n="desc">Choose your preferred medium of interaction.</p>
+
+  <div class="lang-grid" id="langGrid">
+    <div class="lang-card selected" data-lang="en" onclick="selectLang(this)">
+      <span class="lang-name">English</span>
+      <span class="lang-sub">English · Global</span>
+      <div class="lang-dot"></div>
+    </div>
+    <div class="lang-card" data-lang="es" onclick="selectLang(this)">
+      <span class="lang-name">Español</span>
+      <span class="lang-sub">Spanish · Latin</span>
+      <div class="lang-dot"></div>
+    </div>
+    <div class="lang-card" data-lang="ja" onclick="selectLang(this)">
+      <span class="lang-name">日本語</span>
+      <span class="lang-sub">Japanese · 日本</span>
+      <div class="lang-dot"></div>
+    </div>
+    <div class="lang-card" data-lang="fr" onclick="selectLang(this)">
+      <span class="lang-name">Français</span>
+      <span class="lang-sub">French · Europe</span>
+      <div class="lang-dot"></div>
+    </div>
+  </div>
+
+  <button class="btn-glass btn-continue" id="btnNext" onclick="handleContinue()">
+    <span data-i18n="continue">Continue</span>
+    <span class="btn-arrow">→</span>
+  </button>
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-item active">
+    <span class="nav-icon">◉</span>
+    Language
+  </div>
+  <div class="bottom-nav-item" onclick="window.location.href='voice.html'">
+    <span class="nav-icon">◎</span>
+    Voice
+  </div>
+  <div class="bottom-nav-item" onclick="window.location.href='login.html'">
+    <span class="nav-icon">◌</span>
+    Access
+  </div>
+</nav>
+
+<script>
+/* ── STARFIELD ── */
+(function initStarfield() {
+  const sf = document.getElementById('starfield');
+  const style = document.createElement('style');
+  style.textContent = '@keyframes tw{from{opacity:0.02}to{opacity:0.42}}';
+  document.head.appendChild(style);
+
+  for (let i = 0; i < 180; i++) {
+    const d   = document.createElement('div');
+    const s   = (Math.random() * 1.3 + 0.3).toFixed(2);
+    const a   = (Math.random() * 0.35 + 0.04).toFixed(2);
+    const dur = (Math.random() * 5 + 3).toFixed(1);
+    const del = (Math.random() * 4).toFixed(1);
+    d.style.cssText =
+      `position:absolute;border-radius:50%;background:white;` +
+      `width:${s}px;height:${s}px;` +
+      `left:${(Math.random()*100).toFixed(2)}%;` +
+      `top:${(Math.random()*100).toFixed(2)}%;` +
+      `opacity:${a};animation:tw ${dur}s ${del}s ease-in-out infinite alternate;`;
+    sf.appendChild(d);
+  }
+})();
+
+/* ── i18n Dictionary ── */
+const translations = {
+  en: { step: 'Initialization · Step 01', title: 'Select Language', desc: 'Choose your preferred medium of interaction.', continue: 'Continue' },
+  es: { step: 'Inicialización · Paso 01', title: 'Seleccionar Idioma', desc: 'Elige tu medio de interacción preferido.', continue: 'Continuar' },
+  fr: { step: 'Initialisation · Étape 01', title: 'Choisir la Langue', desc: "Choisissez votre mode d'interaction préféré.", continue: 'Continuer' },
+  ja: { step: '初期化 · ステップ 01', title: '言語を選択', desc: 'お好みのインターフェース言語を選んでください。', continue: '続ける' }
+};
+
+function applyLanguage(lang) {
+  const dict = translations[lang] || translations['en'];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.documentElement.lang = lang;
+}
+
+function selectLang(card) {
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const lang = card.dataset.lang;
+  localStorage.setItem('zenith_global_lang', lang);
+  applyLanguage(lang);
+}
+
+function handleContinue() {
+  const selected = document.querySelector('.lang-card.selected');
+  if (!selected) return;
+  localStorage.setItem('zenith_global_lang', selected.dataset.lang);
+  window.location.href = 'voice.html';
+}
+
+window.onload = function () {
+  const saved = localStorage.getItem('zenith_global_lang') || 'en';
+  document.querySelectorAll('.lang-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.lang === saved);
+  });
+  applyLanguage(saved);
+};
+</script>
+
+</body>
+</html>
