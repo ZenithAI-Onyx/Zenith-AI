@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidad — Zenith AI</title>
+
+  <style>
+    /* ── Google Fonts ── */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@100;200;300;400;500&display=swap');
+
+    /* ── Reset ── */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ── Base ── */
+    html, body {
+      min-height: 100%;
+      background: #000005;
+      font-family: 'Inter', sans-serif;
+      color: white;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ── Ambient glow ── */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse 75% 55% at 50% 20%,
+        rgba(255, 255, 255, 0.022) 0%,
+        transparent 70%
+      );
+    }
+
+    /* ── Noise texture overlay ── */
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── Corner hairlines ── */
+    .corner { position: fixed; z-index: 5; pointer-events: none; }
+    .corner--tl { top: 32px;    left: 32px;  }
+    .corner--br { bottom: 32px; right: 32px; }
+
+    .corner--tl::before, .corner--tl::after,
+    .corner--br::before, .corner--br::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.10);
+    }
+    .corner--tl::before { width: 44px;  height: 0.5px; top: 0;    left: 0;  }
+    .corner--tl::after  { width: 0.5px; height: 44px;  top: 0;    left: 0;  }
+    .corner--br::before { width: 44px;  height: 0.5px; bottom: 0; right: 0; }
+    .corner--br::after  { width: 0.5px; height: 44px;  bottom: 0; right: 0; }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 5, 0.60);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .brand-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.44em;
+      color: white;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .brand-corp {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.32em;
+      color: rgba(255, 255, 255, 0.28);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .header-doc-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.38em;
+      color: rgba(255, 255, 255, 0.22);
+      text-transform: uppercase;
+    }
+
+    /* ── Main wrapper ── */
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 128px 32px 120px;
+    }
+
+    /* ── Page heading ── */
+    .doc-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.46em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.22);
+      margin-bottom: 20px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .doc-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      font-weight: 300;
+      letter-spacing: -0.025em;
+      color: rgba(255, 255, 255, 0.93);
+      line-height: 1.05;
+      margin-bottom: 20px;
+      animation: fadeUp 0.9s ease 0.2s both;
+    }
+
+    .doc-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.28);
+      letter-spacing: 0.05em;
+      margin-bottom: 60px;
+      animation: fadeUp 0.9s ease 0.3s both;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%;
+      height: 0.5px;
+      background: rgba(255, 255, 255, 0.07);
+      margin-bottom: 60px;
+      animation: fadeUp 0.9s ease 0.35s both;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 56px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .section:nth-child(1)  { animation-delay: 0.40s; }
+    .section:nth-child(2)  { animation-delay: 0.48s; }
+    .section:nth-child(3)  { animation-delay: 0.56s; }
+    .section:nth-child(4)  { animation-delay: 0.64s; }
+    .section:nth-child(5)  { animation-delay: 0.72s; }
+    .section:nth-child(6)  { animation-delay: 0.80s; }
+    .section:nth-child(7)  { animation-delay: 0.88s; }
+
+    .section-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.18);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 18px;
+      line-height: 1.2;
+    }
+
+    .section-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.50);
+      line-height: 1.85;
+      letter-spacing: 0.02em;
+    }
+
+    .section-body p + p {
+      margin-top: 14px;
+    }
+
+    /* ── Inline list inside section-body ── */
+    .policy-list {
+      list-style: none;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .policy-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.50);
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+    }
+
+    .policy-list li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      margin-top: 9px;
+    }
+
+    /* ── Highlight box (nota importante) ── */
+    .highlight-box {
+      margin-top: 24px;
+      padding: 20px 24px;
+      background: rgba(255, 255, 255, 0.032);
+      border: 0.5px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .highlight-box p {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.40);
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+    }
+
+    .highlight-box strong {
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 400;
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 22px;
+      padding: 18px 24px;
+      background: rgba(255, 255, 255, 0.032);
+      border: 0.5px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .contact-card span {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.40);
+      letter-spacing: 0.03em;
+    }
+
+    .contact-card a {
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .contact-card a:hover {
+      color: rgba(255, 255, 255, 0.90);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 32px;
+      border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.40em;
+      color: rgba(255, 255, 255, 0.16);
+      text-transform: uppercase;
+    }
+
+    .footer-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.12);
+      letter-spacing: 0.04em;
+      text-align: right;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar       { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.07); border-radius: 4px; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.06) transparent; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 18px 20px; }
+      .header-doc-label { display: none; }
+      main { padding: 108px 20px 100px; }
+      footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .footer-note { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient layers -->
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="noise"   aria-hidden="true"></div>
+
+  <!-- Corner hairlines -->
+  <div class="corner corner--tl" aria-hidden="true"></div>
+  <div class="corner corner--br" aria-hidden="true"></div>
+
+  <!-- ── Header ── -->
+  <header>
+    <div>
+      <a class="brand-name" href="index.html">Zenith AI</a>
+      <div class="brand-corp">Onyx Corporation</div>
+    </div>
+    <span class="header-doc-label">Política de Privacidad</span>
+  </header>
+
+  <!-- ── Main document ── -->
+  <main>
+
+    <p class="doc-eyebrow">Documento legal · Privacidad &amp; Datos</p>
+
+    <h1 class="doc-title">Política de<br>Privacidad</h1>
+
+    <p class="doc-meta">
+      Última actualización: Mayo 2026 &nbsp;·&nbsp; Versión 1.1 &nbsp;·&nbsp; Idioma: Español
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- § 1 · Identidad -->
+    <section class="section">
+      <p class="section-number">01 · Identidad</p>
+      <h2 class="section-title">Quiénes somos y cómo contactarnos</h2>
+      <div class="section-body">
+        <p>
+          <strong style="color:rgba(255,255,255,0.72); font-weight:400;">Zenith AI</strong>
+          es una plataforma de inteligencia artificial desarrollada y operada por
+          <strong style="color:rgba(255,255,255,0.72); font-weight:400;">Onyx Corporation</strong>.
+          Nuestro objetivo es ofrecer experiencias de conversación e interacción con IA de alto nivel,
+          respetando siempre la privacidad y la seguridad de quienes confían en nuestros servicios.
+        </p>
+        <p>
+          Si tienes preguntas, dudas o solicitudes relacionadas con el tratamiento de tus datos
+          personales, puedes ponerte en contacto con nosotros directamente:
+        </p>
+
+        <div class="contact-card">
+          <span>Proyecto · <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Zenith AI</strong></span>
+          <span>Empresa · <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Onyx Corporation</strong></span>
+          <span>Correo de contacto · <a href="mailto:onyx.corporation.ai@gmail.com">onyx.corporation.ai@gmail.com</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- § 2 · Datos que se recopilan -->
+    <section class="section">
+      <p class="section-number">02 · Datos recopilados</p>
+      <h2 class="section-title">Información que obtenemos al registrarte</h2>
+      <div class="section-body">
+        <p>
+          Zenith AI utiliza <strong style="color:rgba(255,255,255,0.72); font-weight:400;">Google Sign-In</strong>
+          como método de autenticación. Cuando inicias sesión o creas una cuenta mediante tu cuenta de Google,
+          recibimos únicamente los datos que Google comparte de forma estándar para este fin:
+        </p>
+
+        <ul class="policy-list">
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Nombre completo</strong> — tal como aparece registrado en tu cuenta de Google.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Dirección de correo electrónico</strong> — asociada a tu cuenta de Google.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Foto de perfil</strong> — imagen pública asociada a tu cuenta de Google (si está disponible).</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Identificador único de usuario (UID)</strong> — generado por Firebase Authentication para gestionar tu sesión de forma segura.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p>
+            <strong>No recopilamos</strong> contraseñas, datos de pago, información de ubicación,
+            ni ningún dato sensible más allá de lo necesario para el proceso de autenticación.
+            Toda la información obtenida proviene directamente del flujo seguro de OAuth 2.0 de Google.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- § 3 · Finalidad del uso -->
+    <section class="section">
+      <p class="section-number">03 · Finalidad</p>
+      <h2 class="section-title">Para qué utilizamos tus datos</h2>
+      <div class="section-body">
+        <p>
+          Los datos de tu cuenta de Google son utilizados exclusivamente para los siguientes propósitos,
+          todos ellos esenciales para el correcto funcionamiento de la plataforma:
+        </p>
+
+        <ul class="policy-list">
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Autenticación e identificación</strong> — Verificar tu identidad y permitirte acceder de forma segura a tu cuenta en Zenith AI.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Gestión de sesión</strong> — Mantener tu sesión activa y asociar tu historial de conversaciones e interacciones a tu perfil.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Personalización</strong> — Mostrar tu nombre y foto de perfil dentro de la interfaz de la plataforma.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Comunicaciones esenciales</strong> — En caso necesario, contactarte a través de tu correo electrónico para asuntos relacionados directamente con tu cuenta (cambios en las políticas, avisos de seguridad, etc.).</li>
+        </ul>
+
+        <p style="margin-top:18px;">
+          <strong style="color:rgba(255,255,255,0.65); font-weight:400;">No vendemos, cedemos ni compartimos</strong>
+          tus datos personales con terceros con fines comerciales, publicitarios ni de ninguna otra índole ajena
+          a la operación del servicio.
+        </p>
+      </div>
+    </section>
+
+    <!-- § 4 · Seguridad -->
+    <section class="section">
+      <p class="section-number">04 · Seguridad</p>
+      <h2 class="section-title">Cómo protegemos tu información</h2>
+      <div class="section-body">
+        <p>
+          La seguridad de tus datos es una prioridad fundamental en Zenith AI.
+          Implementamos medidas técnicas y organizativas adecuadas para proteger tu información
+          contra accesos no autorizados, pérdida, alteración o divulgación indebida:
+        </p>
+
+        <ul class="policy-list">
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Autenticación delegada (OAuth 2.0)</strong> — El proceso de inicio de sesión se gestiona íntegramente a través de Google, sin que Zenith AI maneje ni almacene contraseñas.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Firebase Authentication</strong> — Utilizamos los servicios de autenticación de Firebase (Google), que cumplen con los más altos estándares de seguridad de la industria y cifrado de datos en tránsito (TLS/HTTPS).</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Acceso mínimo</strong> — Solo el personal técnico necesario tiene acceso a los sistemas donde se almacenan los datos, y únicamente con el propósito de mantener y mejorar el servicio.</li>
+          <li><strong style="color:rgba(255,255,255,0.65); font-weight:400;">Cifrado en reposo y en tránsito</strong> — Los datos almacenados en Firebase Firestore se encuentran cifrados por defecto tanto en reposo como durante su transmisión.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p>
+            Aunque aplicamos medidas razonables de seguridad, ningún sistema es absolutamente infalible.
+            En caso de detectar cualquier vulnerabilidad o incidente de seguridad, actuaremos de inmediato
+            y notificaremos a los usuarios afectados conforme a la normativa aplicable.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- § 5 · Derechos del usuario -->
+    <section class="section">
+      <p class="section-number">05 · Tus derechos</p>
+      <h2 class="section-title">Control sobre tus datos personales</h2>
+      <div class="section-body">
+        <p>
+          Como usuario de Zenith AI, tienes pleno control sobre la información que hemos asociado a tu cuenta.
+          Puedes ejercer los siguientes derechos en cualquier momento:
+        </p>
+
+        <ul class="policy-list">
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Acceso</strong> —
+            Solicitar información sobre qué datos tenemos almacenados asociados a tu cuenta.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Rectificación</strong> —
+            Actualizar o corregir cualquier dato incorrecto. Para datos provenientes de Google
+            (nombre, correo, foto), puedes hacerlo directamente desde tu cuenta de Google.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Eliminación (derecho al olvido)</strong> —
+            Solicitar la eliminación de tu cuenta y todos los datos asociados a ella en nuestra plataforma.
+            Esto incluye tu historial de conversaciones y cualquier preferencia guardada.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Portabilidad</strong> —
+            Solicitar una copia de tus datos en un formato legible y estructurado.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Oposición o limitación</strong> —
+            Oponerte a ciertos usos de tus datos o solicitar que limitemos su tratamiento en casos específicos.
+          </li>
+        </ul>
+
+        <p style="margin-top:18px;">
+          Para ejercer cualquiera de estos derechos, envía tu solicitud a:
+        </p>
+
+        <div class="contact-card">
+          <span>Correo · <a href="mailto:onyx.corporation.ai@gmail.com">onyx.corporation.ai@gmail.com</a></span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.25);">
+            Responderemos en un plazo máximo de 30 días hábiles a partir de la recepción de tu solicitud.
+          </span>
+        </div>
+
+        <div class="highlight-box" style="margin-top:24px;">
+          <p>
+            <strong>Eliminación de cuenta:</strong> Si deseas eliminar completamente tu cuenta de Zenith AI,
+            puedes solicitarlo enviando un correo con el asunto <strong>"Eliminar mi cuenta"</strong>
+            desde la dirección de correo asociada a tu perfil. Procederemos a eliminar todos tus datos
+            de nuestros sistemas en un plazo máximo de 15 días hábiles.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- § 6 · Edad y menores -->
+    <section class="section">
+      <p class="section-number">06 · Edad y menores</p>
+      <h2 class="section-title">Política de edad y uso por menores</h2>
+      <div class="section-body">
+        <p>
+          Zenith AI es una plataforma diseñada para ser accesible a usuarios de
+          <strong style="color:rgba(255,255,255,0.72); font-weight:400;">13 años en adelante</strong>,
+          sin límite de edad máxima. Queremos que cualquier persona, sin importar su edad,
+          pueda beneficiarse de la inteligencia artificial de forma segura y responsable.
+        </p>
+
+        <ul class="policy-list">
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Menores de 13 años</strong> —
+            Zenith AI no está dirigida a personas menores de 13 años. Si detectamos que un usuario
+            menor de esa edad ha creado una cuenta sin autorización, la eliminaremos de inmediato
+            junto con todos sus datos asociados.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">Entre 13 y 17 años</strong> —
+            Los usuarios menores de 18 años pueden usar Zenith AI, pero se requiere el conocimiento
+            y supervisión de un padre, madre o tutor legal. Al registrarse, el menor declara contar
+            con dicha supervisión.
+          </li>
+          <li>
+            <strong style="color:rgba(255,255,255,0.65); font-weight:400;">18 años en adelante</strong> —
+            Acceso completo y sin restricciones adicionales relacionadas con la edad.
+          </li>
+        </ul>
+
+        <div class="highlight-box">
+          <p>
+            <strong>Para padres y tutores:</strong> Si crees que tu hijo o pupilo menor de 13 años
+            ha creado una cuenta en Zenith AI, contáctanos de inmediato a
+            <strong>onyx.corporation.ai@gmail.com</strong> con el asunto
+            <strong>"Cuenta de menor"</strong> y procederemos a eliminarla en un plazo máximo
+            de 72 horas hábiles.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- § 7 · Cambios en la política -->
+    <section class="section">
+      <p class="section-number">07 · Actualizaciones</p>
+      <h2 class="section-title">Cambios a esta Política de Privacidad</h2>
+      <div class="section-body">
+        <p>
+          Zenith AI puede actualizar esta Política de Privacidad periódicamente para reflejar
+          cambios en el servicio, en la legislación aplicable o en nuestras prácticas internas.
+          Cuando realicemos cambios significativos, te notificaremos mediante un aviso visible
+          en la plataforma o por correo electrónico, con un mínimo de 7 días de antelación
+          antes de que los cambios entren en vigor.
+        </p>
+        <p>
+          El uso continuado de Zenith AI tras la publicación de cambios en esta política
+          implica la aceptación de los nuevos términos. Te recomendamos revisar este documento
+          periódicamente para estar informado sobre cómo protegemos tu información.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <span class="footer-brand">Zenith AI · Onyx Corporation</span>
+    <span class="footer-note">
+      Documento sujeto a actualización periódica.<br>
+      Versión 1.1 · Mayo 2026
+    </span>
+  </footer>
+
+</body>
+</html>
